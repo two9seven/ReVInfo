@@ -30,6 +30,8 @@ namespace ReVInfo
         public MainForm()
         {
             string[] args = System.Environment.GetCommandLineArgs();
+            //string[] args = System.Environment.GetCommandLineArgs();
+
             string val = string.Empty;
             if (args.Length != 2) {
                 if(Directory.Exists(@"C:\Revit 2017 Local")) {
@@ -84,16 +86,22 @@ namespace ReVInfo
             OpenMcdf.CompoundFile file = new OpenMcdf.CompoundFile(FileName);
             CFStream stream = file.RootStorage.GetStream("BasicFileInfo");
             string s = Encoding.BigEndianUnicode.GetString(stream.GetData());
-            Regex rgMatchLines = new Regex (@"Revit Build:.*\d{4} ");
-            foreach (Match match in rgMatchLines.Matches(s)) {
-                versionString += match.Value + System.Environment.NewLine;
-            }
+            //Revit 2019 uses the "Format" string to identify version instead of "Revit Build" as in
+            //earlier versions
+            Regex rgMatchLines = new Regex (@"Format:.*\d{4}");
             
-            s = Encoding.Unicode.GetString(stream.GetData());
-            rgMatchLines = new Regex (@"Revit Build:.*\d{4} ");
             foreach (Match match in rgMatchLines.Matches(s)) {
                 versionString += match.Value + System.Environment.NewLine;
             }
+
+            s = Encoding.Unicode.GetString(stream.GetData());
+            //Revit 2018 and earlier use "Revit Build" to identify version
+            rgMatchLines = new Regex(@"Revit Build:.*\d{4} ");
+            foreach (Match match in rgMatchLines.Matches(s))
+            {
+                versionString += match.Value + System.Environment.NewLine;
+            }
+
             return new FileInfo(GetFileName(FileName), versionString, type);
         }
 
@@ -131,4 +139,5 @@ namespace ReVInfo
             Type = type;
         }
     }
+   
 }
