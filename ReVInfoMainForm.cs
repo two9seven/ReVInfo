@@ -56,7 +56,7 @@ namespace ReVInfo
         
         private void ShowSingleFileInfo(FileInfo fileInfo)
         {
-            System.Windows.Forms.MessageBox.Show(fileInfo.Version, "Version info for" + fileInfo.Name);        
+            System.Windows.Forms.MessageBox.Show(fileInfo.Version, "Version info for: " + fileInfo.Name);        
         }
         
         private void ShowMultiFileInfo(SortableBindingListCollection<FileInfo> fileInfoList)
